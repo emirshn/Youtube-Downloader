@@ -1,0 +1,222 @@
+<template>
+  <v-app>
+    <form @submit.prevent="searchVideo">
+      <h3>Youtube Downloader</h3>
+      <div class="search">
+        <input
+          v-model="videoUrl"
+          type="text"
+          id="url"
+          placeholder="Youtube URL"
+        />
+        <button>Search</button>
+      </div>
+    </form>
+
+    <div class="center pt-1">
+      <v-progress-circular
+        v-if="isLoad"
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
+    </div>
+
+    <div class="result" v-if="video.info">
+      <div class="video-item">
+        <img :src="video.info.thumbnail" alt="" />
+        <div class="video-details">
+          <div class="title">{{ video.info.title }}</div>
+          <div class="author">
+            <span>Author</span> <em>{{ video.info.author }}</em>
+          </div>
+          <div class="length">
+            <span>Duration</span> <em>{{ video.info.time }}</em>
+          </div>
+          <div class="view">
+            <span>Views</span> <em>{{ video.info.views }}</em>
+          </div>
+        </div>
+      </div>
+
+      <ul>
+        <li v-for="source in video.sources">
+          <div class="quality">
+            <span>Quality</span>
+            <em>{{ source.resolution }}</em>
+          </div>
+          <div class="size">
+            <span>Size</span>
+            <em>{{ source.size }}</em>
+          </div>
+          <!-- <button @click="downloadWithAxios(source.url, video.info.title)">
+            Download
+          </button> -->
+          <a :href="source.url" download="video.mp4" target="_blank">Download</a>
+        </li>
+      </ul>
+    </div>
+  </v-app>
+</template>
+
+<script>
+import axios from "axios";
+import { saveAs } from "file-saver";
+
+export default {
+  data() {
+    return { videoUrl: "", video: {}, isLoad: false };
+  },
+  methods: {
+    async searchVideo() {
+      this.isLoad = true;
+      const response = await fetch(
+        `http://127.0.0.1:5000/api/youtube?url=${this.videoUrl}`
+      );
+      this.video = await response.json();
+      this.isLoad = false;
+      console.log(this.video);
+      console.log(this.video.sources[1].url);
+    },
+    downloadWithAxios(link, title) {
+      console.log(title);
+      window.open(link);
+    },
+  },
+};
+</script>
+
+<style>
+* {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: 0;
+  outline: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+html,
+body {
+  font-family: "Mulish", sans-serif;
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+form {
+  text-align: center;
+}
+form h3 {
+  font-size: 50px;
+  font-weight: 900;
+  margin-bottom: 30px;
+}
+form .search {
+  display: flex;
+  width: 700px;
+}
+form .search input {
+  flex: 1;
+  height: 50px;
+  border-radius: 50px 0 0 50px;
+  border: 2px solid #ddd;
+  font-size: 20px;
+  padding: 0 20px;
+  border-right: none;
+}
+form .search input:focus {
+  border-color: #6495ed;
+}
+form .search input:focus + button {
+  border-color: #6495ed;
+  background: #6495ed;
+  color: #fff;
+}
+form .search button {
+  width: 130px;
+  height: 50px;
+  border-radius: 0 50px 50px 0;
+  font-size: 20px;
+  background: #f5f5f5;
+  color: #333;
+  border: 2px solid #ddd;
+  cursor: pointer;
+}
+form .search button:hover {
+  background: #eee;
+}
+.result {
+  width: 700px;
+}
+.result .video-item {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  border: 2px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+}
+.result .video-item img {
+  height: 120px;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+.result .video-item .video-details > div {
+  display: flex;
+  align-items: center;
+  padding-bottom: 6px;
+}
+.result .video-item .video-details span {
+  color: rgba(34, 34, 34, 0.6);
+  width: 140px;
+}
+.result .video-item .video-details .title {
+  font-size: 25px;
+  font-weight: 800;
+}
+.result ul {
+  margin-top: 30px;
+}
+.result ul li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  border: 2px solid #ddd;
+  height: 60px;
+  border-radius: 60px;
+  padding: 0 10px 0 30px;
+}
+.result ul li > div span {
+  font-size: 18px;
+  color: rgba(34, 34, 34, 0.6);
+  margin-right: 15px;
+  padding-right: 15px;
+  border-right: 2px solid #ddd;
+}
+.result ul li > div {
+  margin-right: 40px;
+  font-size: 20px;
+  font-weight: 800;
+}
+.result ul li a {
+  margin-left: auto;
+  height: 40px;
+  border-radius: 40px;
+  background: #088808;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  font-size: 20px;
+  color: #fff;
+}
+.result ul li a:hover {
+  background: #077007;
+}
+.center {
+  text-align: center;
+}
+</style>

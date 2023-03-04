@@ -1,5 +1,24 @@
-# Youtube-Downloader
-A very simple Youtube downloader for learning creating custom apis in backend. I used Vue with Vuetify for frontend and Python with Flask for backend.
+# dnd-creator
 
+## Project setup
+```
+npm install
+```
 
-![image](https://user-images.githubusercontent.com/64266261/222932594-122ad965-d16e-41a5-9d7c-5dd697f4378b.png)
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
